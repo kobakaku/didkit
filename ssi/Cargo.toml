@@ -1,0 +1,14 @@
+[package]
+name = "ssi"
+version = "0.1.0"
+edition = "2018"
+license = "MIT"
+description = "DIDkit SSI"
+keywords = ["did", "ssi"]
+repository = "https://github.com/kobakaku/didkit/ssi"
+
+[features]
+example = []
+
+[dependencies]
+

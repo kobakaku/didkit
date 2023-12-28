@@ -1,5 +1,7 @@
-use anyhow::Result;
+use anyhow::{anyhow, Result};
 use clap::{Args, Subcommand};
+
+// use didkit::DIDMethod;
 
 #[derive(Subcommand)]
 pub enum DidCmd {
@@ -33,6 +35,9 @@ pub async fn cli(cmd: DidCmd) -> Result<()> {
 }
 
 pub async fn create(args: DidCreateArgs) -> Result<()> {
+    let method = DID_METHODS
+        .get(&args.method)
+        .ok_or(anyhow!("Unable to get DID method"))?;
     println!("create did ({})", args.method);
     Ok(())
 }
