@@ -1,7 +1,7 @@
-use anyhow::{anyhow, Result};
+use anyhow::{anyhow, Context, Result};
 use clap::{Args, Subcommand};
-
-// use didkit::DIDMethod;
+use didkit::{DIDCreate, DID_METHODS};
+use std::io::{stdout, BufWriter};
 
 #[derive(Subcommand)]
 pub enum DidCmd {
@@ -38,6 +38,14 @@ pub async fn create(args: DidCreateArgs) -> Result<()> {
     let method = DID_METHODS
         .get(&args.method)
         .ok_or(anyhow!("Unable to get DID method"))?;
-    println!("create did ({})", args.method);
+
+    let tx = method
+        .create(DIDCreate {
+            options: args.options,
+        })
+        .context("DID Create failed")?;
+    let stdout_writer = BufWriter::new(stdout());
+    serde_json::to_writer_pretty(stdout_writer, &tx).unwrap();
+    println!();
     Ok(())
 }

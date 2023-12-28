@@ -11,4 +11,5 @@ repository = "https://github.com/kobakaku/didkit/ssi"
 example = []
 
 [dependencies]
+ssi-dids = { path = "./ssi-dids", version = "0.1" }
 

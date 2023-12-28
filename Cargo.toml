@@ -3,5 +3,6 @@ members = [
   "cli",
   "lib",
   "ssi",
+  "ssi/did-web",
   "ssi/ssi-dids"
 ]
