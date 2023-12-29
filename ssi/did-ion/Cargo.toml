@@ -1,0 +1,12 @@
+[package]
+name = "did-ion"
+version = "0.1.0"
+edition = "2018"
+license = "MIT"
+description = "DIDkit SSI did:ion"
+keywords = ["did", "ssi", "did:ion"]
+repository = "https://github.com/kobakaku/didkit/ssi/did-ion"
+
+[dependencies]
+ssi-dids = { path = "../ssi-dids", version = "0.1" }
+serde_json = "1.0"

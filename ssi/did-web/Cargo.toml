@@ -3,9 +3,9 @@ name = "did-web"
 version = "0.1.0"
 edition = "2018"
 license = "MIT"
-description = "DIDkit SSI DIDWeb"
+description = "DIDkit SSI did:web"
 keywords = ["did", "ssi", "did:web"]
-repository = "https://github.com/kobakaku/didkit/ssi/ssi-dids"
+repository = "https://github.com/kobakaku/didkit/ssi/did-web"
 
 [dependencies]
 ssi-dids = { path = "../ssi-dids", version = "0.1" }
