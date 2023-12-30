@@ -1,7 +1,6 @@
 use anyhow::{anyhow, Context, Result};
 use clap::{Args, Subcommand};
 use didkit::{DIDCreate, DID_METHODS};
-use std::io::{stdout, BufWriter};
 
 #[derive(Subcommand)]
 pub enum DidCmd {
@@ -44,8 +43,7 @@ pub async fn create(args: DidCreateArgs) -> Result<()> {
             options: args.options,
         })
         .context("DID Create failed")?;
-    let stdout_writer = BufWriter::new(stdout());
-    serde_json::to_writer_pretty(stdout_writer, &tx).unwrap();
-    println!();
+
+    println!("{}", serde_json::to_string_pretty(&tx).unwrap());
     Ok(())
 }
