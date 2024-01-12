@@ -7,14 +7,19 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use std::collections::HashMap;
+use std::collections::{BTreeMap as Map, HashMap};
 use thiserror::Error;
+
+use ssi_jwk::JWK;
 
 /// DID Create Operation
 ///
 /// <https://identity.foundation/did-registration/#create>
 pub struct DIDCreate {
-    pub options: Option<String>,
+    pub update_key: Option<JWK>,
+    pub recovery_key: Option<JWK>,
+    pub verification_key: Option<JWK>,
+    pub options: Map<String, Value>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -33,6 +38,11 @@ pub struct DIDMethodTransaction {
 pub enum DIDMethodError {
     #[error("Not implemented for DID method: {0}")]
     NotImplemented(&'static str),
+    #[error("Option '{option}' not supported for DID operation '{operation}'")]
+    OptionNotSupported {
+        operation: &'static str,
+        option: String,
+    },
     #[error(transparent)]
     Other(#[from] anyhow::Error),
 }
