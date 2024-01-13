@@ -2,7 +2,7 @@ use once_cell::sync::Lazy;
 
 use did_ion::DIDIon;
 use did_web::DIDWeb;
-use ssi::did::DIDMethods;
+use ssi::ssi_dids::DIDMethods;
 
 pub static DID_METHODS: Lazy<DIDMethods<'static>> = Lazy::new(|| {
     let mut methods = DIDMethods::default();

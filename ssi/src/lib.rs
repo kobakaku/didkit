@@ -1,1 +1,1 @@
-pub use ssi_dids as did;
+pub use ssi_dids;

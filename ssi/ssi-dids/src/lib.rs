@@ -12,6 +12,9 @@ use thiserror::Error;
 
 use ssi_jwk::JWK;
 
+pub mod did_resolve;
+pub mod error;
+
 /// DID Create Operation
 ///
 /// <https://identity.foundation/did-registration/#create>
