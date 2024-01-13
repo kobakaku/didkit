@@ -4,9 +4,9 @@ use ssi_dids::{DIDCreate, DIDMethod, DIDMethodError, DIDMethodTransaction};
 /// did:web Method
 ///
 /// [Specification](https://w3c-ccg.github.io/did-method-web/)
-pub struct DIDWeb;
+pub struct DIDWEB;
 
-impl DIDMethod for DIDWeb {
+impl DIDMethod for DIDWEB {
     fn name(&self) -> &'static str {
         "web"
     }

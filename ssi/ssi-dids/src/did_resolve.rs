@@ -18,3 +18,19 @@ pub enum Metadata {
     /// [Null](https://infra.spec.whatwg.org/#nulls)
     Null,
 }
+
+/// A DID Resolver implementing a client for the [DID Resolution HTTP(S)
+/// Binding](https://w3c-ccg.github.io/did-resolution/#bindings-https).
+pub struct HTTPDIDResolver {
+    /// HTTP(S) URL for DID resolver HTTP(S) endpoint.
+    pub endpoint: String,
+}
+
+impl HTTPDIDResolver {
+    /// Construct a new HTTP DID Resolver with a given [endpoint][HTTPDIDResolver::endpoint] URL.
+    pub fn new(url: &str) -> Self {
+        Self {
+            endpoint: url.to_string(),
+        }
+    }
+}
