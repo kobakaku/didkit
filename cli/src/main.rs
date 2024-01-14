@@ -6,6 +6,7 @@ use didkit::ssi::ssi_dids::did_resolve::Metadata;
 use serde_json::Value;
 
 mod did;
+mod key;
 
 #[derive(Parser)]
 struct DIDKit {
@@ -14,6 +15,9 @@ struct DIDKit {
 }
 #[derive(Subcommand)]
 pub enum DIDKitCmd {
+    /// Subcommand for keypair operations
+    #[clap(subcommand)]
+    Key(key::KeyCmd),
     /// Subcommand for DID operations
     #[clap(subcommand)]
     Did(did::DidCmd),
@@ -26,6 +30,7 @@ async fn main() -> Result<()> {
     let opt = DIDKit::parse();
     match opt.command {
         DIDKitCmd::Did(args) => did::cli(args).await.unwrap(),
+        DIDKitCmd::Key(args) => key::cli(args).await.unwrap(),
     }
     Ok(())
 }
