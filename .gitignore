@@ -3,3 +3,6 @@
 
 # Ignore cargo.lock file
 Cargo.lock
+
+# Ignore jwk file
+**/*.jwk
