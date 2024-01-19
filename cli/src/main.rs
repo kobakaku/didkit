@@ -1,8 +1,8 @@
-use std::str::FromStr;
+use std::{fs::File, io::BufReader, path::PathBuf, str::FromStr};
 
-use anyhow::{Error, Result};
+use anyhow::{Context, Error, Result};
 use clap::{Parser, Subcommand};
-use didkit::ssi::ssi_dids::did_resolve::Metadata;
+use didkit::{ssi::ssi_dids::did_resolve::Metadata, JWK};
 use serde_json::Value;
 
 mod did;
@@ -88,4 +88,15 @@ fn metadata_properties_to_value(meta_props: Vec<MetadataProperty>) -> Result<Val
         };
     }
     Ok(Value::Object(map))
+}
+
+fn read_jwk_file_opt(pathbuf_opt: &Option<PathBuf>) -> Result<Option<JWK>> {
+    let pathbuf = match pathbuf_opt {
+        Some(pb) => pb,
+        None => return Ok(None),
+    };
+    let key_file = File::open(pathbuf).context("Opening JWK file")?;
+    let key_reader = BufReader::new(key_file);
+    let jwk = serde_json::from_reader(key_reader).context("Reading JWK file")?;
+    Ok(Some(jwk))
 }

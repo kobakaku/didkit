@@ -4,7 +4,7 @@ use std::path::PathBuf;
 
 use didkit::{DIDCreate, DID_METHODS};
 
-use crate::{metadata_properties_to_value, MetadataProperty};
+use crate::{metadata_properties_to_value, read_jwk_file_opt, MetadataProperty};
 
 #[derive(Subcommand)]
 pub enum DidCmd {
@@ -50,7 +50,12 @@ pub async fn create(args: DidCreateArgs) -> Result<()> {
     let method = DID_METHODS
         .get(&args.method)
         .ok_or(anyhow!("Unable to get DID method"))?;
-
+    let update_key =
+        read_jwk_file_opt(&args.update_key).context("Read update key for DID Create")?;
+    let verification_key = read_jwk_file_opt(&args.verification_key)
+        .context("Read verification key for DID Create")?;
+    let recovery_key =
+        read_jwk_file_opt(&args.recovery_key).context("Read recovery key for DID Create")?;
     let options =
         metadata_properties_to_value(args.options).context("Parse options for DID Create")?;
     let options = serde_json::from_value(options).context("Unable to convert options")?;
@@ -58,9 +63,9 @@ pub async fn create(args: DidCreateArgs) -> Result<()> {
     let tx = method
         .create(DIDCreate {
             options: options,
-            update_key: None,
-            recovery_key: None,
-            verification_key: None,
+            update_key,
+            recovery_key,
+            verification_key,
         })
         .context("DID Create failed")?;
 
