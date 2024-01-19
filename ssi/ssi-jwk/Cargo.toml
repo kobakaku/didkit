@@ -7,8 +7,18 @@ description = "DIDkit SSI JWK"
 keywords = ["did", "ssi"]
 repository = "https://github.com/kobakaku/didkit/ssi/ssi-jwk"
 
+[features]
+default = ["secp256k1"]
+
+## enable secp256k1 keys
+secp256k1 = ["rand", "k256"]
+
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 thiserror = "1.0"
 anyhow = "1.0"
+k256 = { version = "0.13.1", optional = true, features = ["ecdsa"] }
+zeroize = { version = "1.5", features = ["zeroize_derive"] }
+rand = { version = "0.8", optional = true }
+base64 = "0.12"
