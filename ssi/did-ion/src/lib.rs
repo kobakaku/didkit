@@ -1,6 +1,8 @@
+mod client;
 mod sidetree;
 
-use sidetree::{Sidetree, SidetreeClient};
+use client::SidetreeClient;
+use sidetree::Sidetree;
 
 pub struct ION;
 
