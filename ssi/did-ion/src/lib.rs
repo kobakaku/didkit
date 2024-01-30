@@ -1,4 +1,5 @@
 mod client;
+mod error;
 mod sidetree;
 
 use client::SidetreeClient;

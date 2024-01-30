@@ -12,19 +12,19 @@ use zeroize::Zeroize;
 pub struct Base64urlUInt(Vec<u8>);
 type Base64urlUIntString = String;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct JWK {
     #[serde(flatten)]
     pub params: Params,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(tag = "kty")]
 pub enum Params {
     EC(ECParams),
 }
 
-#[derive(Debug, Serialize, Deserialize, Zeroize)]
+#[derive(Debug, Serialize, Deserialize, Clone, Zeroize)]
 pub struct ECParams {
     // Parameters for Elliptic Curve Public Keys
     #[serde(rename = "crv")]
@@ -61,6 +61,31 @@ impl JWK {
         Ok(JWK {
             params: Params::EC(ec_params),
         })
+    }
+
+    pub fn to_public(&self) -> Self {
+        let mut key = self.clone();
+        key.params = key.params.to_public();
+        key
+    }
+}
+
+impl Params {
+    pub fn to_public(&self) -> Self {
+        match self {
+            Self::EC(params) => Self::EC(params.to_public()),
+        }
+    }
+}
+
+impl ECParams {
+    pub fn to_public(&self) -> Self {
+        Self {
+            curve: self.curve.clone(),
+            x_coordinate: self.x_coordinate.clone(),
+            y_coordinate: self.y_coordinate.clone(),
+            ecc_private_key: None,
+        }
     }
 }
 

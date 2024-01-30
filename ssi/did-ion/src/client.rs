@@ -6,7 +6,7 @@ use ssi_dids::{
 };
 use ssi_jwk::JWK;
 
-use crate::sidetree::{Operation, PublicKeyJwk, Sidetree};
+use crate::sidetree::{Operation, PublicKeyEntry, PublicKeyJwk, Sidetree};
 
 /// DID Resolver using ION/Sidetree REST API
 pub struct HTTPSidetreeDIDResolver<S: Sidetree> {
@@ -51,7 +51,7 @@ impl<S: Sidetree + Send + Sync> DIDMethod for SidetreeClient<S> {
             options,
             update_key,
             recovery_key,
-            verification_key: _,
+            verification_key,
         } = create;
         if let Some(opt) = options.keys().next() {
             return Err(DIDMethodError::OptionNotSupported {
@@ -59,9 +59,10 @@ impl<S: Sidetree + Send + Sync> DIDMethod for SidetreeClient<S> {
                 option: opt.clone(),
             });
         }
-        let (update_pk, recovery_pk) =
-            new_did_state(update_key, recovery_key).context("Prepare keys for DID creation")?;
-        let operation = S::create_existing(&update_pk, &recovery_pk /*,patches*/)
+        let (update_pk, recovery_pk, patches) =
+            new_did_state(update_key, recovery_key, verification_key)
+                .context("Prepare keys for DID creation")?;
+        let operation = S::create_existing(&update_pk, &recovery_pk, patches)
             .context("Construct Create operation")?;
         let tx =
             Self::operation_to_transaction(operation).context("Construct create transaction")?;
@@ -83,12 +84,17 @@ impl<S: Sidetree> SidetreeClient<S> {
 fn new_did_state(
     update_key: Option<JWK>,
     recovery_key: Option<JWK>,
-    // verification_key: Option<JWK>,
-) -> Result<(PublicKeyJwk, PublicKeyJwk /* , Vec<DIDStatePatch>*/)> {
+    verification_key: Option<JWK>,
+) -> Result<(PublicKeyJwk, PublicKeyJwk, Vec<String>)> {
     let update_key = update_key.ok_or_else(|| anyhow!("Missing required update key"))?;
     let recovery_key = recovery_key.ok_or_else(|| anyhow!("Missing required recovery key"))?;
     // TODO: validate jwk
     let update_pk = PublicKeyJwk::try_from(update_key).context("Convert update key")?;
     let recovery_pk = PublicKeyJwk::try_from(recovery_key).context("Convert recovery key")?;
-    Ok((update_pk, recovery_pk /* , patches*/))
+    let mut patches = vec![];
+    if let Some(verification_key) = verification_key {
+        let public_key_entry =
+            PublicKeyEntry::try_from(verification_key).context("Convert JWK to public key entry");
+    }
+    Ok((update_pk, recovery_pk, patches))
 }
