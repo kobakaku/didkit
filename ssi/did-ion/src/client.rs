@@ -6,8 +6,10 @@ use ssi_dids::{
 };
 use ssi_jwk::JWK;
 
-use crate::sidetree::{
-    DIDStatePatch, DocumentState, Operation, PublicKeyEntry, PublicKeyJwk, Sidetree,
+use crate::{
+    delta::patches::{DIDStatePatch, DocumentState, PublicKeyEntry, PublicKeyJwk},
+    operation::Operation,
+    sidetree::Sidetree,
 };
 
 /// DID Resolver using ION/Sidetree REST API
