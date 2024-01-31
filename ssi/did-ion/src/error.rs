@@ -1,5 +1,12 @@
 use thiserror::Error as ThisError;
 
+#[derive(ThisError, Debug)]
+pub enum SidetreeError {
+    /// Error from [serde_jcs::to_string]
+    #[error("Unable to execute JSON Canonicalization Scheme (JCS)")]
+    JCS(#[from] serde_json::Error),
+}
+
 /// Error resulting from [converting JWK to PublicKeyJwk][PublicKeyJwk::try_from]
 #[derive(ThisError, Debug)]
 pub enum PublicKeyJwkFromJWKError {

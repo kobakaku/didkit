@@ -6,7 +6,9 @@ use ssi_dids::{
 };
 use ssi_jwk::JWK;
 
-use crate::sidetree::{Operation, PublicKeyEntry, PublicKeyJwk, Sidetree};
+use crate::sidetree::{
+    DIDStatePatch, DocumentState, Operation, PublicKeyEntry, PublicKeyJwk, Sidetree,
+};
 
 /// DID Resolver using ION/Sidetree REST API
 pub struct HTTPSidetreeDIDResolver<S: Sidetree> {
@@ -85,7 +87,7 @@ fn new_did_state(
     update_key: Option<JWK>,
     recovery_key: Option<JWK>,
     verification_key: Option<JWK>,
-) -> Result<(PublicKeyJwk, PublicKeyJwk, Vec<String>)> {
+) -> Result<(PublicKeyJwk, PublicKeyJwk, Vec<DIDStatePatch>)> {
     let update_key = update_key.ok_or_else(|| anyhow!("Missing required update key"))?;
     let recovery_key = recovery_key.ok_or_else(|| anyhow!("Missing required recovery key"))?;
     // TODO: validate jwk
@@ -93,8 +95,14 @@ fn new_did_state(
     let recovery_pk = PublicKeyJwk::try_from(recovery_key).context("Convert recovery key")?;
     let mut patches = vec![];
     if let Some(verification_key) = verification_key {
-        let public_key_entry =
-            PublicKeyEntry::try_from(verification_key).context("Convert JWK to public key entry");
+        let public_key_entry = PublicKeyEntry::try_from(verification_key)
+            .context("Convert JWK to public key entry")?;
+        let document = DocumentState {
+            public_keys: Some(vec![public_key_entry]),
+            services: None,
+        };
+        let patch = DIDStatePatch::Replace { document };
+        patches.push(patch);
     }
     Ok((update_pk, recovery_pk, patches))
 }

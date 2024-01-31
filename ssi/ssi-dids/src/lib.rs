@@ -15,6 +15,35 @@ use ssi_jwk::JWK;
 pub mod did_resolve;
 pub mod error;
 
+/// A [verification relationship](https://w3c.github.io/did-core/#dfn-verification-relationship).
+///
+/// The relationship between a [verification method][VerificationMethod] and a DID
+/// Subject (as described by a [DID Document][Document]) is considered analogous to a [proof
+/// purpose](crate::vc::ProofPurpose).
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub enum VerificationRelationship {
+    Authentication,
+    AssertionMethod,
+    KeyAgreement,
+    CapabilityInvocation,
+    CapabilityDelegation,
+    // ContractAgreement,
+}
+
+/// Value for a [serviceEndpoint](https://www.w3.org/TR/did-core/#dfn-serviceendpoint) property of
+/// a [service](https://www.w3.org/TR/did-core/#services) map in a DID document.
+///
+/// "The value of the serviceEndpoint property MUST be a string \[URI], a map, or a set composed of one or
+/// more strings \[URIs] and/or maps."
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+#[serde(untagged)]
+pub enum ServiceEndpoint {
+    URI(String),
+    Map(Value),
+}
+
 /// DID Create Operation
 ///
 /// <https://identity.foundation/did-registration/#create>
